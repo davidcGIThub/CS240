@@ -1,22 +1,11 @@
-import image
-package image_editor;
 
-public class ImageEditor {
+
+public class imageEditor {
 	public static void main(String[] args)
 	{
-		bool file = true; 
-		try
-		{
-			image pic = new image(args[0])
-		}
-		catch
-		{
-			file = false;
-		}
-		if(!file)
-		{
-			System.out.println("USAGE: java ImageEditor in-file out-file command : in-file must be a .bmp file");
-		}
+		image pic = new image(args[0]);
+	
+		
 		if(args.length < 3)
 		{
 			System.out.println("USAGE: java ImageEditor in-file out-file (grayscale|invert|emboss|motionblur motion-blur-length)");
@@ -40,7 +29,7 @@ public class ImageEditor {
 		{
 			
 			try {
-					n = Integer.parseInt(args[3]);
+					int n = Integer.parseInt(args[3]);
 					pic.motionblur(n);
 					pic.makeFile(args[1]);
 		    	}
@@ -55,7 +44,7 @@ public class ImageEditor {
 		}
 		else 
 		{
-			"USAGE: java ImageEditor in-file out-file (grayscale|invert|emboss|motionblur motion-blur-length)");
+			System.out.println("USAGE: java ImageEditor in-file out-file (grayscale|invert|emboss|motionblur motion-blur-length)");
 		}
 		
 	}
