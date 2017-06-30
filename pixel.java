@@ -1,6 +1,8 @@
-package image_editor;
+
 
 public class pixel {
+
+	
 	public int red;
 	public int green;
 	public int blue;
