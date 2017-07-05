@@ -1,4 +1,4 @@
-package spell_checker;
+
 
 public class Trie implements ITrie
 {
@@ -6,6 +6,7 @@ public class Trie implements ITrie
 	private int wordCount;
 	private int nodeCount;
 	private String words;
+	boolean equiv;
 	
 	public Trie()
 	{
@@ -14,6 +15,7 @@ public class Trie implements ITrie
 		wordCount = 0;
 		nodeCount = 1;
 		words ="";
+		equiv = true;
 	}
 
 	/**
@@ -21,33 +23,33 @@ public class Trie implements ITrie
 	 * @param word The word being added to the trie
 	 */
 	
-	public void add(String word); // maybe need to check if the string is longer than 1??
+	public void add(String word) // maybe need to check if the string is longer than 1??
 	{
 		int step = 0;
 		boolean done = false;
-		Node node = root;
+		Node nod = root;
 		
 		
 		while(!done)
 		{
 			char let = word.charAt(step);
 			
-			if(node[let] == null)
+			if(nod.node[let] == null)
 			{
-				node[let] = new Node(let);
+				nod.node[let] = new Node(let);
 				nodeCount++;
 			}
 			
 			if(step < (word.length()-1) )
 			{
-				node = node[let];
+				nod = nod.node[let];
 			}
 			else
 			{
-				node[let].value++;
+				nod.node[let].value++;
 				done = true;
 				
-					if(node[let].value == 1)
+					if(nod.node[let].value == 1)
 					{
 						wordCount++;
 					}
@@ -68,14 +70,14 @@ public class Trie implements ITrie
 	{
 		int step = 0;
 		boolean done = false;
-		Node node = root;
+		Node nod = root;
 		
 		
 		while(!done)
 		{
 			char let = word.charAt(step);
 			
-			if(node[let] == null)
+			if(nod.node[let] == null)
 			{
 				done = true;
 				return null;
@@ -84,24 +86,25 @@ public class Trie implements ITrie
 			{
 				if(step < (word.length()-1) )
 				{
-					node = node[let];
+					nod = nod.node[let];
 					step++;
 				}
 				else
 				{
-					if(node[let].getWordCount() == 0)
+					done = true;
+					if(nod.node[let].getValue() == 0)
 					{
 						return null;
 					}
 					else
 					{
-						return node[let];
+						return nod.node[let];
 					}
-					done = true;
 				}
 			}
 		
 		}
+		return null;
 	}
 	
 	/**
@@ -127,17 +130,18 @@ public class Trie implements ITrie
 	@Override
 	public String toString()
 	{
-		String word = "";
+		String word;
 		for(int i = 0; i < 26; i++)
 		{
-			if(!(root['a'+i] == null))
+			word = "";
+			if(!(root.node['a'+i] == null))
 			{
-				word = word + root['a'+i].getLetter();
-				if(root['a' + i].value > 0)
+				word = word + root.node['a'+i].getLetter();
+				if(root.node['a' + i].value > 0)
 				{
 					words = words + word + "\n";
 				}
-				toString(word, root['a'+i]);
+				toString(word, root.node['a'+i]);
 			}
 		}
 		String wordList = words;
@@ -149,14 +153,14 @@ public class Trie implements ITrie
 	{
 		for(int i = 0; i < 26; i++)
 		{
-			if(!(nod['a'+i] == null))
+			if(!(nod.node['a'+i] == null))
 			{
-				word = word + nod['a'+i].getLetter();
-				if(nod['a' + i].value > 0)
+				word = word + nod.node['a'+i].getLetter();
+				if(nod.node['a' + i].value > 0)
 				{
 					words = words + word + "\n";
 				}
-				toString(word, nod['a'+i]);
+				toString(word, nod.node['a'+i]);
 			}
 		}
 	}
@@ -172,68 +176,49 @@ public class Trie implements ITrie
 	@Override
 	public boolean equals(Object o)
 	{
-		boolean equiv = true;
-		for (int i = 0; i < 26; i++)
+		Trie other = (Trie)o;
+		if(other == null)
 		{
-			if(root['a' + i] == null)
+			equiv = false;
+		}
+		else if(this == other)
+		{
+			
+		}
+		else
+		{
+			for (int i = 0; i < 26; i++)
 			{
-				if(o.root['a' + i] == null)
+				if(root.node['a' + i] == null)
 				{
+					if(other.root.node['a' + i] == null)
+					{
 					
+					}
+					else
+					{
+						equiv = false;
+						i = 26;
+					}
 				}
 				else
 				{
-					equiv = false;
-					i = 26;
-				}
-			}
-			else
-			{
-				if(o.root['a' + i] == null)
-				{
-					equiv = false;
-					i = 26;
-				}
-				else if(root['a' + i].equals(o.root['a' + i]))
-				{
-					this.equiv(root['a' + i],o.root['a' + i]);
+					if(other.root.node['a' + i] == null)
+					{
+						equiv = false;
+						i = 26;
+					}
+					else if(root.node['a' + i].equals(other.root.node['a' + i]))
+					{
+						root.node['a' + i].equals(other.root.node['a' + i]);
+					}
 				}
 			}
 					
 		}
-		return equiv;
-	}
-	
-	public void equals(Node one, Node two)
-	{
-		for (int i = 0; i < 26; i++)
-		{
-			if(one['a' + i] == null)
-			{
-				if(two['a' + i] == null)
-				{
-					
-				}
-				else
-				{
-					equiv = false;
-					i = 26;
-				}
-			}
-			else
-			{
-				if(two['a' + i] == null)
-				{
-					equiv = false;
-					i = 26;
-				}
-				else if(one['a' + i].equals(two['a' + i]))
-				{
-					this.equiv(one['a' + i],two['a' + i]);
-				}
-			}
-					
-		}
+		boolean equivalent = equiv;
+		equiv = true;
+		return equivalent;
 	}
 	
 	
@@ -262,7 +247,7 @@ public class Trie implements ITrie
 		 * Returns the char value for the character represented by the node
 		 */
 		
-		public char getLetter();
+		public char getLetter()
 		{
 			return letter;
 		}
@@ -270,14 +255,36 @@ public class Trie implements ITrie
 		@Override
 		public boolean equals(Object o)
 		{
-			if(this.value == o.getValue && this.letter == o.getLetter())
+			Node other = (Node)o;
+			for (int i = 0; i < 26; i++)
 			{
-				return true;
+				if(node['a' + i] == null)
+				{
+					if(other.node['a' + i] == null)
+					{
+						
+					}
+					else
+					{
+						equiv = false;
+						i = 26;
+					}
+				}
+				else
+				{
+					if(other.node['a' + i] == null)
+					{
+						equiv = false;
+						i = 26;
+					}
+					else if(node['a' + i].value == other.node['a' + i].value)
+					{
+						node.equals(other.node['a' + i]);
+					}
+				}
+						
 			}
-			else
-			{
-				return false;
-			}
+			return equiv;
 		}
 	}
 
